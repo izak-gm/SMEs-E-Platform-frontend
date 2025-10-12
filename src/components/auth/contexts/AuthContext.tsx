@@ -39,7 +39,7 @@ const login = async (email: string, password: string, role: UserRole) => {
   setError(null);
 
   try {
-    const response = await api.post(`/auth/${role}/login`, { email, password });
+    const response = await api.post(`/auth/login`, { email, password });
 
     const token: string =
       response.data.token?.accessToken || response.data.accessToken;
@@ -53,7 +53,7 @@ const login = async (email: string, password: string, role: UserRole) => {
       exp: number;
     }>(token);
 
-    const userRole = decoded.roles?.[0]; // ✅ renamed to avoid shadowing
+    const userRole = decoded.roles?.[0]; 
     if (!userRole) throw new Error("Invalid token: missing role");
 
     setUser({ email: decoded.email, role: userRole, id: decoded.id });

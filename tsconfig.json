@@ -6,7 +6,7 @@
     "lib": ["DOM", "ESNext"],
     "jsx": "react-jsx",
 
-    "types": ["vite/client"],
+    "types": ["vite/client", "react", "react-dom"],
 
     "strict": true,
     "skipLibCheck": true,
@@ -14,7 +14,7 @@
     "allowSyntheticDefaultImports": true,
 
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    "exactOptionalPropertyTypes": false,
     "isolatedModules": true,
 
     "baseUrl": ".",
