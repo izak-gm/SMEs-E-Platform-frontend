@@ -1,4 +1,4 @@
-import { useAuth } from '@/components/auth/hooks/useAuth';
+import { useAuth } from '@/components/auth/contexts/AuthContext';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import ModeToggle from './ModeToggle';

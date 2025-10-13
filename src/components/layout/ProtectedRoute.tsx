@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { useAuth } from "@/components/auth/hooks/useAuth";
 import { UserRole } from "@/components/auth/types/authTypes";
+import { useAuth } from "../auth/contexts/AuthContext";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -26,14 +26,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         email: string;
         id: number;
         roles?: UserRole[];
-        enabled?: boolean;
       }>(token);
 
+      if (!decoded.roles?.[0]) {
+  throw new Error("User has no role assigned");
+}
       return {
         email: decoded.email,
         role: decoded.roles?.[0],
         id: decoded.id,
-        enabled: decoded.enabled ?? true,
       };
     } catch (err) {
       console.error("Invalid token:", err);
@@ -61,8 +62,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     if (
       userData.email !== user.email ||
       userData.role !== user.role ||
-      userData.id !== user.id ||
-      userData.enabled !== user.enabled
+      userData.id !== user.id
     ) {
       setUser(userData);
     }
@@ -73,10 +73,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   if (!user) {
-    return <Navigate to="/unauthorized" replace />;
-  }
-
-  if (!user.enabled) {
     return <Navigate to="/unauthorized" replace />;
   }
 

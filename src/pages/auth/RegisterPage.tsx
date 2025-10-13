@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/utils/axios";
 import { jwtDecode } from "jwt-decode";
-import { useAuth } from "@/components/auth/hooks/useAuth";
+import { useAuth } from "@/components/auth/contexts/AuthContext";
 import { PasswordInput } from "@/components/ui/common-ui/PasswordInput";
 import RequirementItem from "./utils/RequirementItem";
 import { UserRole } from "@/components/auth/types/authTypes";
@@ -77,6 +77,9 @@ export default function RegisterPage() {
         email: string;
         id: number;
       }>(token);
+      if (!decoded.roles?.[0]) {
+        throw new Error("User has no role assigned");
+      }
 
       setUser({
         email: decoded.email,

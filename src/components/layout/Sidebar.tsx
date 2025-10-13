@@ -5,9 +5,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/components/auth/hooks/useAuth';
 import { getNavigationForRole } from './config/navigation-items';
 import MainNav from './MainNav';
+import { useAuth } from '../auth/contexts/AuthContext';
 
 interface SidebarProps {
   onCollapseChange?: (collapsed: boolean) => void;
@@ -16,7 +16,7 @@ interface SidebarProps {
 export default function Sidebar({ onCollapseChange }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { user } = useAuth();
-  const navigationGroups = getNavigationForRole(user?.role || 'admin');
+  const navigationGroups = getNavigationForRole(user?.role || 'ROLE_ADMIN');
   const location = useLocation();
 
   useEffect(() => {
