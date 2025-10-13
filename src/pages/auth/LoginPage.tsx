@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "@/components/auth/hooks/useAuth";
+import { useAuth } from "@/components/auth/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,7 +27,9 @@ export default function LoginPage() {
   const [_error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+
+  const { login } = useAuth(); // Get login from AuthContext
+
   const {
     register,
     handleSubmit,
@@ -38,29 +40,7 @@ export default function LoginPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const { email, password } = data;
-      const response = await api.post(`/auth/login`, {
-        email,
-        password,
-      });
-
-      const token: string =
-        response.data.token?.accessToken || response.data.accessToken;
-
-      // Save token to localStorage
-      localStorage.setItem("jwt", token);
-
-      // Decode token to get user email and role
-      const decoded = jwtDecode<{
-        roles?: UserRole[];
-        email: string;
-        id: number;
-      }>(token);
-    const userRole = decoded.roles?.[0];
-    if (!userRole) throw new Error("Invalid token: missing role");
-
-    setUser({ email: decoded.email, role: userRole, id: decoded.id });
-
+      await login(data.email, data.password);
 
       toast({
         title: "Success",
@@ -147,10 +127,7 @@ export default function LoginPage() {
             </Button>
             <div className="text-center text-sm mt-2">
               Don't have an account?{" "}
-              <Link
-                to="/signup"
-                className="text-primary hover:underline"
-              >
+              <Link to="/signup" className="text-primary hover:underline">
                 Register
               </Link>
             </div>

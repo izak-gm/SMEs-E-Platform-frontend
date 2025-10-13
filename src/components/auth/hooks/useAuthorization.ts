@@ -1,5 +1,5 @@
 import type { UserRole } from "../types/authTypes";
-import { useAuth } from "./useAuth";
+import { useAuth } from "@/components/auth/contexts/AuthContext";
 
 export const useAuthorization = (allowedRoles: UserRole[]) => {
   const { user } = useAuth();
