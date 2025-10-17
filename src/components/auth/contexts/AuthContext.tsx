@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 export interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
+  registeruser: (email: string, password: string) => Promise<UserRole>; // Change to Promise<UserRole>
   login: (email: string, password: string) => Promise<UserRole>; // Change to Promise<UserRole>
   logout: () => void;
   isLoading: boolean;
@@ -68,6 +69,87 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       return parts.length === 3;
     } catch {
       return false;
+    }
+  };
+
+  const registeruser = async (email: string, password: string): Promise<UserRole> => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      localStorage.removeItem("jwt");
+
+      // Use generic login endpoint - backend will determine role
+      const response = await api.post(`/auth/register`, {
+        email,
+        password,
+      });
+
+      const token: string =
+        response.data.token?.accessToken ||
+        response.data.accessToken ||
+        response.data.token;
+
+      if (!token) {
+        throw new Error("No token received from server");
+      }
+
+      if (!isValidTokenFormat(token)) {
+        throw new Error("Invalid token format received from server");
+      }
+
+      localStorage.setItem("jwt", token);
+
+      const decoded = jwtDecode<{
+        roles: UserRole[];
+        email: string;
+        id: number;
+        exp: number;
+      }>(token);
+
+      if (!decoded.roles?.[0]) {
+        throw new Error("User has no role assigned");
+      }
+
+      const userRole = decoded.roles[0];
+
+      setUser({
+        email: decoded.email,
+        role: userRole,
+        id: decoded.id,
+      });
+
+      toast({
+        title: "Success",
+        description: `Register in as ${userRole} successfully!`,
+        variant: "success",
+      });
+
+      // Return the role for redirect logic
+      return userRole;
+    } catch (err: any) {
+      console.error("Login error:", err);
+
+      let errorMessage = "Login failed. Please check your credentials.";
+
+      if (err.response?.status === 403) {
+        errorMessage =
+          "Access forbidden. Please check your credentials or contact administrator.";
+      } else if (err.response?.status === 401) {
+        errorMessage = "Invalid email or password.";
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+
+      setError(errorMessage);
+      toast({
+        title: "Error",
+        variant: "error",
+        description: errorMessage,
+      });
+      throw err;
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -165,7 +247,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider
-      value={{ user, setUser, login, logout, isLoading, error }}
+      value={{ user, setUser,registeruser, login, logout, isLoading, error }}
     >
       {children}
     </AuthContext.Provider>

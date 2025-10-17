@@ -14,9 +14,10 @@ const adminNavigation: NavGroup[] = [
 const buyerNavigation: NavGroup[] = [
   {
     title: "Dashboard",
-    items: [{ title: "Home", href: "/dashboard", icon: Home }],
+    items: [
+      { title: "Home", href: "/dashboard", icon: Home },
+      { title: "Update Profile", href: "/dashboard/update-profile", icon: Home }],
   },
- 
  
 ];
 
