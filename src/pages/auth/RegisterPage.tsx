@@ -35,7 +35,8 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { setUser } = useAuth();
+  const { registeruser } = useAuth(); // Get login from AuthContext
+
   const [requirements, setRequirements] = useState({
     length: false,
     uppercase: false,
@@ -56,43 +57,8 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
     try {
-      const { email, password } = data;
-      const response = await api.post(`/auth/register`, {
-        email,
-        password,
-      });
-
-      if (!response.data) {
-        throw new Error("An error occurred during sign up");
-      }
-
-      const token: string = response.data.token?.accessToken;
-
-      // Save token to localStorage
-      localStorage.setItem("jwt", token);
-
-      // Decode token to get user email and role
-      const decoded = jwtDecode<{
-        roles: UserRole[];
-        email: string;
-        id: number;
-      }>(token);
-      if (!decoded.roles?.[0]) {
-        throw new Error("User has no role assigned");
-      }
-
-      setUser({
-        email: decoded.email,
-        role: decoded.roles[0],
-        id: decoded.id,
-      });
-
-      toast({
-        title: "Account created",
-        description: "Account successfully created",
-      });
-
-      // navigate("/lender/update-profile");
+      await registeruser(data.email,data.password);
+      navigate("/dashboard");
     } catch (err) {
       let errorMessage = "An error occurred. Please try again";
       if ((err as AxiosError<{ message: string }>)?.response?.data?.message) {
@@ -283,7 +249,7 @@ export default function RegisterPage() {
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => navigate("/login/lender")}
+              onClick={() => navigate("/signin")}
             >
               Already have an account? Login
             </Button>

@@ -16,9 +16,6 @@ import {
 } from "@/components/ui/card";
 import type { LoginFormData } from "@/components/auth/schemas/auth-schema";
 import { useState } from "react";
-import api from "@/utils/axios";
-import { jwtDecode } from "jwt-decode";
-import { UserRole } from "@/components/auth/types/authTypes";
 import { useToast } from "@/hooks/use-toast";
 import { PasswordInput } from "@/components/ui/common-ui/PasswordInput";
 
@@ -48,7 +45,6 @@ export default function LoginPage() {
         variant: "success",
       });
 
-      navigate("/dashboard");
     } catch (err) {
       console.log("Catch:", JSON.stringify(err));
       setError("Invalid email or password");

@@ -13,6 +13,7 @@ import DashboardPage from "@/pages/dashboard/Dashboard";
 import Unauthorized from "@/components/layout/Unauthorized";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage"
+import UpdateProfilePage from "@/pages/auth/UpdateProfilePage"
 
 const AppRoutes = () => {
   return (
@@ -40,7 +41,21 @@ const AppRoutes = () => {
         }
       >
         <Route index element={<DashboardPage />} />
-
+        <Route
+          path="update-profile"
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                "ROLE_ADMIN",
+                "ROLE_USER",
+                "ROLE_SELLER",
+                "ROLE_SUPER_ADMIN",
+              ]}
+            >
+              <UpdateProfilePage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
     </Routes>
   );
