@@ -29,11 +29,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       }>(token);
 
       if (!decoded.roles?.[0]) {
-  throw new Error("User has no role assigned");
-}
+        throw new Error("User has no role assigned");
+      }
+
       return {
         email: decoded.email,
-        role: decoded.roles?.[0],
+        role: decoded.roles[0],
         id: decoded.id,
       };
     } catch (err) {
@@ -44,29 +45,18 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }, [token]);
 
   useEffect(() => {
+    // Restore user from token on first load
     if (token && !user) {
       const userData = updateUserFromToken();
-      if (userData) {
-        setUser(userData);
-      }
+      if (userData) setUser(userData);
     }
     setIsLoading(false);
   }, [token, user, setUser, updateUserFromToken]);
 
-  useEffect(() => {
-    if (!user || !token) return;
-
-    const userData = updateUserFromToken();
-    if (!userData) return;
-
-    if (
-      userData.email !== user.email ||
-      userData.role !== user.role ||
-      userData.id !== user.id
-    ) {
-      setUser(userData);
-    }
-  }, [location.pathname, user, token, setUser, updateUserFromToken]);
+  // Wait for auth state restoration before deciding
+  if (isLoading) {
+    return <div>Loading...</div>; // You can use a spinner or skeleton here
+  }
 
   if (!token) {
     return <Navigate to="/" state={{ from: location }} replace />;
@@ -76,7 +66,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/unauthorized" replace />;
   }
 
-  const hasRequiredRole = allowedRoles.some((role) => user.role === role);
+  const hasRequiredRole = allowedRoles.includes(user.role);
   if (!hasRequiredRole) {
     return <Navigate to="/unauthorized" replace />;
   }

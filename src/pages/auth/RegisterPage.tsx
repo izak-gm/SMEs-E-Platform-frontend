@@ -17,12 +17,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import api from "@/utils/axios";
-import { jwtDecode } from "jwt-decode";
 import { useAuth } from "@/components/auth/contexts/AuthContext";
 import { PasswordInput } from "@/components/ui/common-ui/PasswordInput";
 import RequirementItem from "./utils/RequirementItem";
-import { UserRole } from "@/components/auth/types/authTypes";
 
 interface RegisterFormData {
   email: string;

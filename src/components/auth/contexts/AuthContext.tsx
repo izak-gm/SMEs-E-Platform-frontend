@@ -26,12 +26,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const token = localStorage.getItem("jwt");
-    if (token) {
-      validateToken(token);
-    }
-  }, []);
+const [initializing, setInitializing] = useState(true);
+
+useEffect(() => {
+  const token = localStorage.getItem("jwt");
+  if (token) {
+    validateToken(token).finally(() => setInitializing(false));
+  } else {
+    setInitializing(false);
+  }
+}, []);
 
   const validateToken = async (token: string) => {
     try {
@@ -80,7 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       localStorage.removeItem("jwt");
 
       // Use generic login endpoint - backend will determine role
-      const response = await api.post(`/auth/register`, {
+      const response = await api.post(`auth/register`, {
         email,
         password,
       });
@@ -161,7 +165,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       localStorage.removeItem("jwt");
 
       // Use generic login endpoint - backend will determine role
-      const response = await api.post(`/auth/login`, {
+      const response = await api.post(`auth/login`, {
         email,
         password,
       });
@@ -247,7 +251,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider
-      value={{ user, setUser,registeruser, login, logout, isLoading, error }}
+      value={{ user, setUser, registeruser, login, logout, isLoading, error }}
     >
       {children}
     </AuthContext.Provider>
