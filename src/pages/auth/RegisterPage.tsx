@@ -17,12 +17,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import api from "@/utils/axios";
-import { jwtDecode } from "jwt-decode";
-import { useAuth } from "@/components/auth/hooks/useAuth";
+import { useAuth } from "@/components/auth/contexts/AuthContext";
 import { PasswordInput } from "@/components/ui/common-ui/PasswordInput";
 import RequirementItem from "./utils/RequirementItem";
-import { UserRole } from "@/components/auth/types/authTypes";
 
 interface RegisterFormData {
   email: string;
@@ -35,7 +32,8 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { setUser } = useAuth();
+  const { registeruser } = useAuth(); // Get login from AuthContext
+
   const [requirements, setRequirements] = useState({
     length: false,
     uppercase: false,
@@ -56,40 +54,8 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
     try {
-      const { email, password } = data;
-      const response = await api.post(`/auth/register`, {
-        email,
-        password,
-      });
-
-      if (!response.data) {
-        throw new Error("An error occurred during sign up");
-      }
-
-      const token: string = response.data.token?.accessToken;
-
-      // Save token to localStorage
-      localStorage.setItem("jwt", token);
-
-      // Decode token to get user email and role
-      const decoded = jwtDecode<{
-        roles: UserRole[];
-        email: string;
-        id: number;
-      }>(token);
-
-      setUser({
-        email: decoded.email,
-        role: decoded.roles[0],
-        id: decoded.id,
-      });
-
-      toast({
-        title: "Account created",
-        description: "Account successfully created",
-      });
-
-      // navigate("/lender/update-profile");
+      await registeruser(data.email,data.password);
+      navigate("/dashboard");
     } catch (err) {
       let errorMessage = "An error occurred. Please try again";
       if ((err as AxiosError<{ message: string }>)?.response?.data?.message) {
@@ -280,7 +246,7 @@ export default function RegisterPage() {
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => navigate("/login/lender")}
+              onClick={() => navigate("/signin")}
             >
               Already have an account? Login
             </Button>

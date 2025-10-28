@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { useAuth } from "@/components/auth/hooks/useAuth";
 import { UserRole } from "@/components/auth/types/authTypes";
+import { useAuth } from "../auth/contexts/AuthContext";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -26,14 +26,16 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         email: string;
         id: number;
         roles?: UserRole[];
-        enabled?: boolean;
       }>(token);
+
+      if (!decoded.roles?.[0]) {
+        throw new Error("User has no role assigned");
+      }
 
       return {
         email: decoded.email,
-        role: decoded.roles?.[0],
+        role: decoded.roles[0],
         id: decoded.id,
-        enabled: decoded.enabled ?? true,
       };
     } catch (err) {
       console.error("Invalid token:", err);
@@ -43,30 +45,18 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }, [token]);
 
   useEffect(() => {
+    // Restore user from token on first load
     if (token && !user) {
       const userData = updateUserFromToken();
-      if (userData) {
-        setUser(userData);
-      }
+      if (userData) setUser(userData);
     }
     setIsLoading(false);
   }, [token, user, setUser, updateUserFromToken]);
 
-  useEffect(() => {
-    if (!user || !token) return;
-
-    const userData = updateUserFromToken();
-    if (!userData) return;
-
-    if (
-      userData.email !== user.email ||
-      userData.role !== user.role ||
-      userData.id !== user.id ||
-      userData.enabled !== user.enabled
-    ) {
-      setUser(userData);
-    }
-  }, [location.pathname, user, token, setUser, updateUserFromToken]);
+  // Wait for auth state restoration before deciding
+  if (isLoading) {
+    return <div>Loading...</div>; // You can use a spinner or skeleton here
+  }
 
   if (!token) {
     return <Navigate to="/" state={{ from: location }} replace />;
@@ -76,11 +66,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/unauthorized" replace />;
   }
 
-  if (!user.enabled) {
-    return <Navigate to="/unauthorized" replace />;
-  }
-
-  const hasRequiredRole = allowedRoles.some((role) => user.role === role);
+  const hasRequiredRole = allowedRoles.includes(user.role);
   if (!hasRequiredRole) {
     return <Navigate to="/unauthorized" replace />;
   }

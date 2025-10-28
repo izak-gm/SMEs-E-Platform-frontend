@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuth } from '@/components/auth/hooks/useAuth';
+import { useAuth } from '@/components/auth/contexts/AuthContext';
 import type { User as UserType } from '@/components/auth/types/authTypes';
 import { useNavigate } from 'react-router-dom';
 
@@ -38,13 +38,12 @@ export default function HeaderProfileDropdown({ user }: ProfileDropdownProps) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {allowedRoles.includes(user?.role) && (
-          <DropdownMenuItem onClick={() => navigate('admin/profile')}>
+        {/* {allowedRoles.includes(user?.role) && ( */}
+          <DropdownMenuItem >
             <User className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </DropdownMenuItem>
-        )}
-        <DropdownMenuItem onClick={logout}>
+/        <DropdownMenuItem onClick={logout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>

@@ -1,7 +1,6 @@
-import { useAuth } from "@/components/auth/hooks/useAuth";
+import { useAuth } from "@/components/auth/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import UserDashboard from "./user/UserDashboard";
-
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -15,9 +14,9 @@ export default function Dashboard() {
     //   return <AdminDashboard />;
     // case "super_admin":
     //   return <AdminDashboard />;
-    case "user":
+    case "ROLE_USER":
       return <UserDashboard />;
-    case "seller":
+    case "ROLE_SELLER":
       return <UserDashboard />;
     default:
       return <div>Invalid user role</div>;

@@ -5,53 +5,89 @@ import {
   Navigate,
 } from "react-router-dom";
 import { ThemeProvider } from "@/providers/ThemeProvider";
-import { AuthProvider } from "@/components/auth/contexts/AuthContext";
 import { Toaster } from "@/components/ui/common-ui/sonner-toaster";
-import { useAuth } from "@/components/auth/hooks/useAuth";
+import {AuthProvider,useAuth } from "@/components/auth/contexts/AuthContext.tsx";
 import ProtectedRoute from "@/components/layout/ProtectedRoute";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import DashboardPage from "@/pages/dashboard/Dashboard";
 import Unauthorized from "@/components/layout/Unauthorized";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage"
+import UpdateProfilePage from "@/pages/auth/UpdateProfilePage"
+import AddressPage from "@/pages/address/AddressPage"
 
 const AppRoutes = () => {
-  const { user } = useAuth();
-
   return (
     <Routes>
       {/* Public routes */}
-      <Route
-        path="/login"
-        element={user ? <Navigate to="/" replace /> : <LoginPage />}
-      />
-      <Route
-        path="/signup"
-        element={user ? <Navigate to="/" replace /> : <RegisterPage />}
-      />
+      <Route path="/signin" element={<SigninWrapper />} />
+      <Route path="/signup" element={<SignupWrapper />} />
+
       <Route path="/unauthorized" element={<Unauthorized />} />
 
-      {/* Protected routes (for authenticated users only) */}
+      {/* Protected routes */}
       <Route
         path="/dashboard"
         element={
           <ProtectedRoute
-            allowedRoles={["admin", "user", "seller", "super_admin"]}
+            allowedRoles={[
+              "ROLE_ADMIN",
+              "ROLE_USER",
+              "ROLE_SELLER",
+              "ROLE_SUPER_ADMIN",
+            ]}
           >
-              <DashboardLayout />
+            <DashboardLayout />
           </ProtectedRoute>
         }
       >
         <Route index element={<DashboardPage />} />
-
+        <Route
+          path="update-profile"
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                "ROLE_ADMIN",
+                "ROLE_USER",
+                "ROLE_SELLER",
+                "ROLE_SUPER_ADMIN",
+              ]}
+            >
+              <UpdateProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="address"
+          element={
+            <ProtectedRoute
+              allowedRoles=
+              {[
+                "ROLE_ADMIN",
+                "ROLE_USER",
+                "ROLE_SELLER",
+                "ROLE_SUPER_ADMIN",
+              ]}>
+              <AddressPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
-
-
-      {/* Catch-all route */}
-      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
+
+// Wrappers to use useAuth safely
+const SigninWrapper = () => {
+  const { user } = useAuth();
+  return user ? <Navigate to="/dashboard" replace /> : <LoginPage />;
+};
+
+const SignupWrapper = () => {
+  const { user } = useAuth();
+  return user ? <Navigate to="/dashboard" replace /> : <RegisterPage />;
+};
+
 
 export default function App() {
   return (
@@ -65,3 +101,4 @@ export default function App() {
     </ThemeProvider>
   );
 }
+
