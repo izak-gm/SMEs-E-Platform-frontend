@@ -14,6 +14,7 @@ import Unauthorized from "@/components/layout/Unauthorized";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage"
 import UpdateProfilePage from "@/pages/auth/UpdateProfilePage"
+import AddressPage from "@/pages/address/AddressPage"
 
 const AppRoutes = () => {
   return (
@@ -53,6 +54,21 @@ const AppRoutes = () => {
               ]}
             >
               <UpdateProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="address"
+          element={
+            <ProtectedRoute
+              allowedRoles=
+              {[
+                "ROLE_ADMIN",
+                "ROLE_USER",
+                "ROLE_SELLER",
+                "ROLE_SUPER_ADMIN",
+              ]}>
+              <AddressPage />
             </ProtectedRoute>
           }
         />

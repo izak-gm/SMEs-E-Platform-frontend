@@ -1,5 +1,6 @@
 import {
   Home,
+  LocateIcon,
 } from "lucide-react";
 import type { UserRole } from "@/components/auth/types/authTypes";
 import { NavGroup } from "../types/DashboardLayoutTypes";
@@ -16,7 +17,9 @@ const buyerNavigation: NavGroup[] = [
     title: "Dashboard",
     items: [
       { title: "Home", href: "/dashboard", icon: Home },
-      { title: "Update Profile", href: "/dashboard/update-profile", icon: Home }],
+      { title: "Update Profile", href: "/dashboard/update-profile", icon: Home },
+      { title: "Location", href: "/dashboard/address", icon: LocateIcon }
+    ],
   },
  
 ];
