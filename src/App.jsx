@@ -15,6 +15,8 @@ import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage"
 import UpdateProfilePage from "@/pages/auth/UpdateProfilePage"
 import AddressPage from "@/pages/address/AddressPage"
+import ProductBrandPage from "@/pages/shop/settings/ProductBrandPage.tsx"
+import ProductCategoryPage from "@/pages/shop/settings/ProductCategoryPage.tsx"
 
 const AppRoutes = () => {
   return (
@@ -61,14 +63,30 @@ const AppRoutes = () => {
           path="address"
           element={
             <ProtectedRoute
-              allowedRoles=
-              {[
+              allowedRoles={[
                 "ROLE_ADMIN",
                 "ROLE_USER",
                 "ROLE_SELLER",
                 "ROLE_SUPER_ADMIN",
-              ]}>
+              ]}
+            >
               <AddressPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="product/brands"
+          element={
+            <ProtectedRoute allowedRoles={["ROLE_SELLER"]}>
+              <ProductBrandPage/>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="product/brands"
+          element={
+            <ProtectedRoute allowedRoles={["ROLE_SELLER"]}>
+              <ProductCategoryPage/>
             </ProtectedRoute>
           }
         />
@@ -77,7 +95,6 @@ const AppRoutes = () => {
   );
 };
 
-// Wrappers to use useAuth safely
 const SigninWrapper = () => {
   const { user } = useAuth();
   return user ? <Navigate to="/dashboard" replace /> : <LoginPage />;
