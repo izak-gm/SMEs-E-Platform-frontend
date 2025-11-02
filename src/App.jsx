@@ -15,8 +15,9 @@ import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage"
 import UpdateProfilePage from "@/pages/auth/UpdateProfilePage"
 import AddressPage from "@/pages/address/AddressPage"
-import ProductBrandPage from "@/pages/shop/settings/ProductBrandPage.tsx"
-import ProductCategoryPage from "@/pages/shop/settings/ProductCategoryPage.tsx"
+import StorePage from "@/pages/shop/StorePage"
+import ProductBrandPage from "@/pages/shop/settings/ProductBrandPage"
+import ProductCategoryPage from "@/pages/shop/settings/ProductCategoryPage"
 
 const AppRoutes = () => {
   return (
@@ -75,7 +76,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="product/brands"
+          path="product/brand"
           element={
             <ProtectedRoute allowedRoles={["ROLE_SELLER"]}>
               <ProductBrandPage/>
@@ -83,10 +84,18 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="product/brands"
+          path="product/category"
           element={
             <ProtectedRoute allowedRoles={["ROLE_SELLER"]}>
               <ProductCategoryPage/>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="store"
+          element={
+            <ProtectedRoute allowedRoles={["ROLE_SELLER"]}>
+              <StorePage/>
             </ProtectedRoute>
           }
         />

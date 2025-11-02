@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
+import {Form,
   FormControl,
   FormField,
   FormItem,
@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import api from "@/utils/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { Form, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import z from "zod";
 import { STORESTATUS } from "./enums/storeEnum";
 import { AxiosError } from "axios";
@@ -27,7 +27,7 @@ const storeSchema = z.object({
   name: z.string().min(1, "Name of the store is required"),
   slug: z.string().min(1, "Name of the slug is required"),
   description: z.string().min(1, "Name of the store is required"),
-  status: z.string().min(1, "Name of the store is required"),
+  // status: z.string().min(1, "Name of the store is required"),
 });
 
 type StoreFormData = z.infer<typeof storeSchema>;
@@ -45,7 +45,6 @@ export default function StoreForm() {
       name: "",
       slug: "",
       description: "",
-      status: "",
     },
   });
 
@@ -54,7 +53,7 @@ export default function StoreForm() {
     setError("");
     const userId = user?.id;
     try {
-      const response = await api.post("auth/stores", {
+      const response = await api.post("bizhub/seller/store/", {
         ...data,
         status: STORESTATUS.PENDING,
         owner_id: userId,
@@ -94,7 +93,7 @@ export default function StoreForm() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 name="name"
                 control={form.control}
@@ -142,7 +141,7 @@ export default function StoreForm() {
               />
               {error && <p className=" text-red-500 text-sm">{error}</p>}
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Saving Store" : "Save Store"}
+                {isLoading ? "Saving..." : "Save "}
               </Button>
             </form>
           </Form>

@@ -18,7 +18,7 @@ import z from "zod";
 
 const categorySchema = z.object({
   name: z.string().min(2, "Category name is required"),
-  parent: z.string().min(2, "Category name is required"),
+  // parent: z.string().min(2, "Category name is required").nullable(),
 
 });
 
@@ -32,7 +32,7 @@ export default function CategoryForm() {
 
   const form = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema),
-    defaultValues: { name: "", parent: '' },
+    defaultValues: { name: ""},
   });
 
   const onSubmit = async (data: CategoryFormData) => {
@@ -40,7 +40,7 @@ export default function CategoryForm() {
     setError("");
 
     try {
-       const response = await api.post("auth/categories", data);
+       const response = await api.post("bizhub/category", data);
 
       if (!response.data) {
         throw new Error("An error occurred during creating Category");
@@ -75,7 +75,7 @@ export default function CategoryForm() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="parent"
                 render={({ field }) => (
@@ -89,7 +89,7 @@ export default function CategoryForm() {
                     </FormControl>
                   </FormItem>
                 )}
-              />
+              /> */}
               <FormField
                 control={form.control}
                 name="name"

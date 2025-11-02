@@ -85,7 +85,7 @@ export default function BrandForm() {
         logo_url: uploadedUrl,
       };
 
-      const brandResponse = await api.post("auth/brands", brandPayload);
+      const brandResponse = await api.post("bizhub/brand", brandPayload);
 
       if (!brandResponse.data) {
         throw new Error("An error occurred during creating Brand");
