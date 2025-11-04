@@ -58,6 +58,7 @@ export default function StoreForm() {
         status: STORESTATUS.PENDING,
         owner_id: userId,
       });
+      console.log(response)
       if (!response) {
         throw Error("An Error occured during creating a Store");
       }
@@ -118,7 +119,7 @@ export default function StoreForm() {
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="Enter a slug of the store"
+                        placeholder="Enter a slug of the store(No spaces between)"
                       />
                     </FormControl>
                   </FormItem>

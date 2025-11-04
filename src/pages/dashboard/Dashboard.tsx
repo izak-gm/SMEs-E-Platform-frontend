@@ -1,6 +1,7 @@
 import { useAuth } from "@/components/auth/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import UserDashboard from "./user/UserDashboard";
+import SellerDashboard from "./user/SellerDashboard";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -17,7 +18,7 @@ export default function Dashboard() {
     case "ROLE_USER":
       return <UserDashboard />;
     case "ROLE_SELLER":
-      return <UserDashboard />;
+      return <SellerDashboard />;
     default:
       return <div>Invalid user role</div>;
   }

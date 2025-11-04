@@ -40,6 +40,7 @@ const sellerNavigation: NavGroup[] = [
         href: "/dashboard/product/category",
         icon: ShoppingBag,
       },
+      { title: "Product", href: "/dashboard/product", icon: ShoppingBag },
     ],
   },
 ];

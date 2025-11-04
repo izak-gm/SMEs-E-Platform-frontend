@@ -15,6 +15,8 @@ import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage"
 import UpdateProfilePage from "@/pages/auth/UpdateProfilePage"
 import AddressPage from "@/pages/address/AddressPage"
+import HomePage from "@/pages/landing/LandingPage"
+import ProductPage from "@/pages/shop/ProductPage"
 import StorePage from "@/pages/shop/StorePage"
 import ProductBrandPage from "@/pages/shop/settings/ProductBrandPage"
 import ProductCategoryPage from "@/pages/shop/settings/ProductCategoryPage"
@@ -23,6 +25,8 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Public routes */}
+      
+      <Route path="/" element={<HomePage />} />
       <Route path="/signin" element={<SigninWrapper />} />
       <Route path="/signup" element={<SignupWrapper />} />
 
@@ -96,6 +100,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["ROLE_SELLER"]}>
               <StorePage/>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="product"
+          element={
+            <ProtectedRoute allowedRoles={["ROLE_SELLER"]}>
+              <ProductPage/>
             </ProtectedRoute>
           }
         />

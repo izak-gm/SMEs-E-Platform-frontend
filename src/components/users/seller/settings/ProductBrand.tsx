@@ -72,12 +72,12 @@ export default function BrandForm() {
         formData.append("file", logo_url);
       }
 
-      const uploadResponse = await api.post("auth/upload", formData, {
+      const uploadResponse = await api.post("bizhub/upload/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       const uploadedUrl = uploadResponse.data?.url;
-      if (!uploadedUrl) throw new Error("Logo upload failed");
+      // if (!uploadedUrl) throw new Error("Logo upload failed");
 
       // Create brand with uploaded logo URL
       const brandPayload = {
@@ -85,7 +85,7 @@ export default function BrandForm() {
         logo_url: uploadedUrl,
       };
 
-      const brandResponse = await api.post("bizhub/brand", brandPayload);
+      const brandResponse = await api.post("bizhub/brand/", brandPayload);
 
       if (!brandResponse.data) {
         throw new Error("An error occurred during creating Brand");

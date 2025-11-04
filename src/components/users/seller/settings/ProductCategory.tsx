@@ -40,7 +40,7 @@ export default function CategoryForm() {
     setError("");
 
     try {
-       const response = await api.post("bizhub/category", data);
+       const response = await api.post("bizhub/category/", data);
 
       if (!response.data) {
         throw new Error("An error occurred during creating Category");
